@@ -161,3 +161,4 @@ cython_debug/
 
 # Data libraries
 data/
+caboost_info/
