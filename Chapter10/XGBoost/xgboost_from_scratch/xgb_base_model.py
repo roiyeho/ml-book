@@ -1,8 +1,8 @@
 import numpy as np
-from sklearn.base import BaseEstimator
-from xgb_tree import XGBTree
 from abc import ABC, abstractmethod
+from sklearn.base import BaseEstimator
 from typing import List
+from xgb_tree import XGBTree
 
 class XGBBaseModel(ABC, BaseEstimator):
     """Base class for the XGBoost estimators, compatible with Scikit-Learn API."""

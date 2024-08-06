@@ -6,7 +6,7 @@ from xgboost import XGBRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import HistGradientBoostingRegressor
 
-# Benchmark on the california housing data set
+# Benchmark on the california housing dataset
 data = fetch_california_housing()
 X, y = data.data, data.target
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
