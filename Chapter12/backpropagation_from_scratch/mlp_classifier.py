@@ -35,10 +35,10 @@ class MLPClassifier(BaseEstimator, ClassifierMixin):
         net_inputs = []  # List of net inputs for each layer
         
         for i in range(len(self.weights)):
-            z = activations[-1] @ self.weights[i] + self.biases[i] 
-            a = self.sigmoid(z)
-            net_inputs.append(z)            
-            activations.append(a)
+            Z = activations[-1] @ self.weights[i] + self.biases[i] 
+            A = self.sigmoid(Z)
+            net_inputs.append(Z)            
+            activations.append(A)
         
         return net_inputs, activations
 
@@ -66,12 +66,14 @@ class MLPClassifier(BaseEstimator, ClassifierMixin):
         return -np.mean(y * np.log(y_pred + 1e-8) + (1 - y) * np.log(1 - y_pred + 1e-8))
 
     def fit(self, X, y):
-        """Fit the neural network to the training data."""
-        n_samples, n_features  = X.shape
-        y = y.reshape(n_samples, 1)
+        """Fit the neural network to the training data, using mini-batch gradient descent."""
+        n_samples, n_features = X.shape
+        y = y.reshape(n_samples, 1)  # Ensure y is a column vector
 
-        # Include input and output layers
+        # Include input and output layers in the layers list
         self.layer_sizes = [n_features] + self.hidden_layer_sizes + [1]
+
+        # Initialize weights and biases
         self.initialize_weights()
 
         for epoch in range(self.epochs):
@@ -81,19 +83,23 @@ class MLPClassifier(BaseEstimator, ClassifierMixin):
             X = X[indices]
             y = y[indices]
             
-            # Mini-batch processing
+            # Process data in mini-batches
             for start_idx in range(0, n_samples, self.batch_size):
                 end_idx = min(start_idx + self.batch_size, n_samples)
                 X_batch = X[start_idx:end_idx]
                 y_batch = y[start_idx:end_idx]
+
+                # Forward pass
                 net_inputs, activations = self.forward_pass(X_batch)
+
+                # Backward pass
                 self.back_propagate(y_batch, net_inputs, activations)
 
-            # Report loss
+            # Report training loss at specified intervals
             if (epoch + 1) % self.report_interval == 0 or epoch == 0:
                 y_pred = self.predict_proba(X)
                 loss = self.compute_loss(y, y_pred)
-                print(f'Epoch {epoch + 1}, Training loss: {loss}')
+                print(f'Epoch {epoch + 1}, Training loss: {loss:.6f}')
             
     def predict_proba(self, X):
         """Predict class probabilities for the given inputs."""
