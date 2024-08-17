@@ -1,3 +1,7 @@
+# Author: Roi Yehoshua <roiyeho@gmail.com>
+# August 2024
+# License: MIT
+
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 
