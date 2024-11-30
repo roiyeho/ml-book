@@ -9,33 +9,34 @@ class XGBClassifier(XGBBaseModel, ClassifierMixin):
         super().__init__(n_estimators, max_depth, learning_rate, reg_lambda, gamma, verbose)
 
     def get_base_prediction(self, y):
-        """The initial prediction is the log odds of the positive class."""
+        """Initialize the prediction to the log-odds of the positive class."""
         prob = np.sum(y == 1) / len(y)
         return np.log(prob / (1 - prob))
     
     def sigmoid(self, x):
+        """Apply the sigmoid function."""
         return 1 / (1 + np.exp(-x))
     
-    def calc_gradients(self, y, out):
+    def calc_gradients(self, y, output):
         """Compute the first-order gradients of the log loss function."""
-        prob = self.sigmoid(out)    
+        prob = self.sigmoid(output)    
         grads = prob - y
         return grads
 
-    def calc_hessians(self, y, out):
-        """Compute the second-order derivatives of the log loss function."""
-        prob = self.sigmoid(out)
+    def calc_hessians(self, y, output):
+        """Compute the second-order gradients of the log loss function."""
+        prob = self.sigmoid(output)
         hessians = prob * (1 - prob)
         return hessians
     
     def predict_proba(self, X):
-        """Compute the predicted probability of the positive class for each sample."""
+        """Compute the predicted probabilities of the positive class."""
         log_odds = self.get_output_values(X)
         prob = self.sigmoid(log_odds)
         return prob
     
     def predict(self, X):
-        """Return class labels based on the predicted probabilities."""
+        """Generate class labels based on the predicted probabilities."""
         prob = self.predict_proba(X)
         y_pred = np.where(prob > 0.5, 1, 0)
         return y_pred

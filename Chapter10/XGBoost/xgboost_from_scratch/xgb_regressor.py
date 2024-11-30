@@ -12,17 +12,17 @@ class XGBRegressor(XGBBaseModel, RegressorMixin):
         """Initialize the prediction to the mean of the target variable."""
         return np.mean(y)
 
-    def calc_gradients(self, y, out):
+    def calc_gradients(self, y, output):
         """Compute the first-order gradients of the squared loss function."""
-        grads = 2 * (out - y)
+        grads = 2 * (output - y)
         return grads
 
-    def calc_hessians(self, y, out):
-        """Compute the second-order derivatives of the squared loss function."""
+    def calc_hessians(self, y, output):
+        """Compute the second-order gradients of the squared loss function."""
         hessians = np.full(len(y), 2)
         return hessians
     
     def predict(self, X):
-        """Directly use the ensemble's outputs as predictions for regression."""
+        """Return the ensemble's raw outputs as the final predictions."""
         y_pred = self.get_output_values(X)
         return y_pred

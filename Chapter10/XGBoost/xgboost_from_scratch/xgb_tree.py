@@ -6,13 +6,13 @@ class XGBTree:
         self.root: XGBNode = None
 
     def build(self, X, grads, hessians, max_depth, reg_lambda, gamma):
-        """Starts the recursive building of the tree from the root."""
+        """Initiate the recursive construction of the tree starting from the root."""
         self.root = XGBNode()
         curr_depth = 0
         self.root.build(X, grads, hessians, curr_depth, max_depth, reg_lambda, gamma)
 
     def predict(self, x):
-        """Delegate the prediction task to the root node of the tree."""
+        """Delegate the prediction task to the root node."""
         if self.root is not None:
             return self.root.predict(x)
         else:
