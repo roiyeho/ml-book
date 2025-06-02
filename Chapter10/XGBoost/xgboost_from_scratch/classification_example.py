@@ -4,7 +4,8 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from xgb_classifier import XGBClassifier as CustomXGBClassifier
 from xgboost import XGBClassifier
-from sklearn.ensemble import GradientBoostingClassifier, HistGradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import HistGradientBoostingClassifier
 
 # Benchmark on the breast cancer dataset
 X, y = load_breast_cancer(return_X_y=True)
