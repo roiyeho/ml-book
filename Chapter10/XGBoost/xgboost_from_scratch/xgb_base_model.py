@@ -9,27 +9,27 @@ class XGBBaseModel(ABC, BaseEstimator):
     def __init__(self, n_estimators=100, max_depth=6, learning_rate=0.3,    
                  reg_lambda=1, gamma=0, verbose=0):
         self.n_estimators = n_estimators    # Number of trees      
-        self.max_depth = max_depth          # Maximum depth of each tree 
+        self.max_depth = max_depth          # Maximum tree depth
         self.learning_rate = learning_rate  # Shrinkage factor
         self.reg_lambda = reg_lambda        # L2 regularization term
-        self.gamma = gamma                  # Minimum loss reduction for splits
+        self.gamma = gamma                  # Minimum loss reduction to split a node
         self.verbose = verbose              # Verbosity level for logging
         
     def fit(self, X, y):
         """Build an ensemble of decision trees from the input data."""
-        # Initialize the prediction with a base value 
+        # Initialize predictions with a constant base value 
         self.base_pred = self.get_base_prediction(y)
         
         self.estimators: List[XGBTree] = []
         for i in range(self.n_estimators):
-            # Obtain the predictions of the current ensemble
+            # Get predictions of the current ensemble
             output = self.get_output_values(X)
 
-            # Compute the gradients and Hessians of the loss function  
+            # Compute gradients and Hessians of the loss function  
             grads = self.calc_gradients(y, output)
             hessians = self.calc_hessians(y, output)
 
-            # Build a new tree to correct the prediction errors of the ensemble 
+            # Build a new tree to correct the residual errors 
             tree = XGBTree()
             tree.build(X, grads, hessians, self.max_depth, self.reg_lambda, self.gamma)
             self.estimators.append(tree)
@@ -43,29 +43,27 @@ class XGBBaseModel(ABC, BaseEstimator):
         # Initialize the output with the base prediction
         output = np.full(X.shape[0], self.base_pred)
 
-        # Sum up the predictions from all trees, scaled by the learning rate
-        if len(self.estimators) > 0:
-            for i in range(len(X)):            
-                output[i] += np.sum(self.learning_rate * estimator.predict(X[i]) 
-                                    for estimator in self.estimators)
+        # Add the predictions from each tree, scaled by the learning rate
+        for estimator in self.estimators:
+            output += self.learning_rate * np.array([estimator.predict(x) for x in X])
         return output
     
     @abstractmethod
     def get_base_prediction(self, y):
-        """Define the initial prediction for the model."""
+        """Return the initial prediction value for the model."""
         pass
 
     @abstractmethod
     def calc_gradients(self, y, output):
-        """Compute the first-order gradients of the loss function.""" 
+        """Compute the first-order derivatives (gradients) of the loss function.""" 
         pass
 
     @abstractmethod
     def calc_hessians(self, y, output):
-        """Compute the second-order gradients of the loss function."""
+        """Compute the second-order derivatives (Hessians) of the loss function."""
         pass
 
     @abstractmethod
     def predict(self, X):
-        """Generate the final predictions for the input samples."""
+        """Return the final predictions for the input samples."""
         pass

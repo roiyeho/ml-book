@@ -12,7 +12,7 @@ class XGBTree:
         self.root.build(X, grads, hessians, curr_depth, max_depth, reg_lambda, gamma)
 
     def predict(self, x):
-        """Delegate the prediction task to the root node."""
+        """Predict the output for a given sample by traversing the tree."""
         if self.root is not None:
             return self.root.predict(x)
         else:

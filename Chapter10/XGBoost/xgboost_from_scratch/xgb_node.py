@@ -1,7 +1,7 @@
 import numpy as np
 
 class XGBNode:
-    """A node in the XGBoost regression tree"""
+    """A node in an XGBoost regression tree"""
     def __init__(self):
         self.is_leaf: bool = False
         self.left_child: XGBNode = None
@@ -9,7 +9,7 @@ class XGBNode:
 
     def build(self, X, grads, hessians, curr_depth, max_depth, reg_lambda, gamma):
         """Recursively build the node until a stopping criterion is met."""
-        # Check if only one sample remains or the maximum tree depth is reached
+        # Stop if only one sample remains or the maximum tree depth is reached
         if len(X) == 1 or curr_depth >= max_depth:
             self.is_leaf = True
             self.weight = self.calc_leaf_weight(grads, hessians, reg_lambda)
@@ -18,7 +18,7 @@ class XGBNode:
         # Find the best split for the current node
         best_gain, best_split = self.find_best_split(X, grads, hessians, reg_lambda, gamma)
         
-        # If no further split provides a positive gain, make this node a leaf
+        # If no split yields a positive gain, make this node a leaf
         if best_gain < 0:
             self.is_leaf = True
             self.weight = self.calc_leaf_weight(grads, hessians, reg_lambda)
@@ -29,7 +29,7 @@ class XGBNode:
             self.split_feature_idx = feature_idx
             self.split_threshold = threshold
 
-            # Split the node into left and right child nodes
+            # Recursively build the left and right subtrees
             self.left_child = XGBNode()
             self.left_child.build(X[left_samples_idx], grads[left_samples_idx],
                                     hessians[left_samples_idx], curr_depth + 1,
@@ -40,8 +40,11 @@ class XGBNode:
                                     max_depth, reg_lambda, gamma)
             
     def calc_leaf_weight(self, grads, hessians, reg_lambda):
-        """Calculate the weight for a leaf node."""
-        return -np.sum(grads) / (np.sum(hessians) + reg_lambda)
+        """Calculate the optimal weight for a leaf node."""
+        denominator = np.sum(hessians) + reg_lambda
+        if denominator == 0:
+            return 0.0  # Degenerate case (zero curvature and no regularization)
+        return -np.sum(grads) / denominator
        
     def find_best_split(self, X, grads, hessians, reg_lambda, gamma):
         """Find the optimal split point by evaluating all possible splits."""
@@ -54,17 +57,17 @@ class XGBNode:
         for j in range(X.shape[1]):
             G_left, H_left = 0, 0
 
-            # Sort the samples by the current feature value            
+            # Sort the samples by the j-th feature            
             sorted_samples_idx = np.argsort(X[:, j])
 
             # Evaluate each potential split point
-            for i in range(0, X.shape[0] - 1):   
+            for i in range(0, X.shape[0] - 1):
                 G_left += grads[sorted_samples_idx[i]]
                 H_left += hessians[sorted_samples_idx[i]]
                 G_right = G - G_left
                 H_right = H - H_left
 
-                # Calculate the gain for the current split
+                # Calculate the gain of the current split
                 curr_gain = self.calc_split_gain(G, H, G_left, H_left, G_right, H_right, 
                                                     reg_lambda, gamma)
 
@@ -79,7 +82,7 @@ class XGBNode:
         return best_gain, best_split
     
     def calc_split_gain(self, G, H, G_left, H_left, G_right, H_right, reg_lambda, gamma):
-        """Calculate the gain from a split."""
+        """Calculate the gain resulting from a candidate split."""
         def calc_term(g, h):
             return g**2 / (h + reg_lambda)
 
@@ -88,7 +91,7 @@ class XGBNode:
         return gain
         
     def predict(self, x):
-        """Predict the outcome by traversing the tree to a leaf node."""
+        """Traverse the tree and return the prediction for a given sample."""
         if self.is_leaf:
             return self.weight
         else:

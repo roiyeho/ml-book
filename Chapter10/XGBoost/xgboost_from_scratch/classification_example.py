@@ -4,8 +4,7 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from xgb_classifier import XGBClassifier as CustomXGBClassifier
 from xgboost import XGBClassifier
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier, HistGradientBoostingClassifier
 
 # Benchmark on the breast cancer dataset
 X, y = load_breast_cancer(return_X_y=True)
@@ -23,7 +22,7 @@ def evaluate_model(name, model, X_train, y_train, X_test, y_test):
     print(f'Training time: {elapsed:.3f} sec')
 
     # Evaluate performance
-    train_score = model.score(X_train ,y_train)
+    train_score = model.score(X_train, y_train)
     print(f'Accuracy (train): {train_score:.4f}')
     test_score = model.score(X_test, y_test)
     print(f'Accuracy (test): {test_score:.4f}\n')
