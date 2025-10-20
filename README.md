@@ -6,3 +6,5 @@ This repository contains the code examples, exercises, and datasets accompanying
 [Machine Learning Foundations by Roi Yehoshua](https://www.amazon.com/Machine-Learning-Foundations-Roi-Yehoshua/dp/0135337860)
 
 Stay tuned for updates and additional resources!
+
+<img src="Images/book_cover.jpg" alt="Book cover" width="200"/>
