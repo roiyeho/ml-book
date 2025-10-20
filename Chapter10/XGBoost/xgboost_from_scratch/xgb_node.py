@@ -8,14 +8,14 @@ class XGBNode:
         self.right_child: XGBNode = None
 
     def build(self, X, grads, hessians, curr_depth, max_depth, reg_lambda, gamma):
-        """Recursively build the node until a stopping criterion is met."""
+        """Recursively build the subtree rooted at this node."""
         # Stop if only one sample remains or the maximum tree depth is reached
         if len(X) == 1 or curr_depth >= max_depth:
             self.is_leaf = True
             self.weight = self.calc_leaf_weight(grads, hessians, reg_lambda)
             return
         
-        # Find the best split for the current node
+        # Find the best split at this node
         best_gain, best_split = self.find_best_split(X, grads, hessians, reg_lambda, gamma)
         
         # If no split yields a positive gain, make this node a leaf

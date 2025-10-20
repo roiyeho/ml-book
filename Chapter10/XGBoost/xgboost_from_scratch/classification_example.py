@@ -32,7 +32,7 @@ models = {
     'CustomXGBClassifier': CustomXGBClassifier(),
     'XGBClassifier': XGBClassifier(random_state=42),
     'GradientBoostingClassifier': GradientBoostingClassifier(random_state=42),
-    'HistGradientBoostingClassifier': HistGradientBoostingClassifier(random_state=42),
+    'HistGradientBoostingClassifier': HistGradientBoostingClassifier(random_state=42)
 }
 
 # Evaluate each model and print the results

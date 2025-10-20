@@ -32,7 +32,7 @@ models = {
     'CustomXGBRegressor': CustomXGBRegressor(),
     'XGBRegressor': XGBRegressor(random_state=42),
     'GradientBoostingRegressor': GradientBoostingRegressor(random_state=42),
-    'HistGradientBoostingRegressor': HistGradientBoostingRegressor(random_state=42),
+    'HistGradientBoostingRegressor': HistGradientBoostingRegressor(random_state=42)
 }
 
 # Evaluate each model and print the results

@@ -29,7 +29,7 @@ class XGBBaseModel(ABC, BaseEstimator):
             grads = self.calc_gradients(y, output)
             hessians = self.calc_hessians(y, output)
 
-            # Build a new tree to correct the residual errors 
+            # Build a new tree and add it to the ensemble
             tree = XGBTree()
             tree.build(X, grads, hessians, self.max_depth, self.reg_lambda, self.gamma)
             self.estimators.append(tree)
