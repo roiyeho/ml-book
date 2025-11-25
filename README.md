@@ -1,5 +1,10 @@
-# ml-book
-Code repository for Machine Learning Foundations textbook
+# Machine Learning Foundations – Code Repository
 
-<img src="Images/book_cover.jpg" alt="Book cover" width="400"/>
+This repository contains the code examples accompanying my textbook **_Machine Learning Foundations_**, published by **Addison-Wesley** and scheduled for release in **January 2026**.
 
+📘 Available for pre-order on Amazon:  
+[Machine Learning Foundations by Roi Yehoshua](https://www.amazon.com/Machine-Learning-Foundations-Roi-Yehoshua/dp/0135337860)
+
+Stay tuned for updates and additional resources!
+
+<img src="Images/book_cover.jpg" alt="Book cover" width="200"/>
